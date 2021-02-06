@@ -56,3 +56,10 @@
 /processorParam:TextureFormat=Color
 /build:mouse.png
 
+#begin Yusei.spritefont
+/importer:FontDescriptionImporter
+/processor:LocalizedFontProcessor
+/processorParam:PremultiplyAlpha=True
+/processorParam:TextureFormat=Compressed
+/build:Yusei.spritefont
+

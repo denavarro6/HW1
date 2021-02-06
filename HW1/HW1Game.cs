@@ -13,6 +13,7 @@ namespace HW1
         private MouseSprite[] mice;
         private CatSprite cat;
         private SpriteFont spriteFont;
+        private SpriteFont spriteFont2;
         private int miceLeft;
         private Texture2D catnip;
 
@@ -54,6 +55,7 @@ namespace HW1
             foreach (var mouse in mice) mouse.LoadContent(Content);
             cat.LoadContent(Content);
             spriteFont = Content.Load<SpriteFont>("Hanalei");
+            spriteFont2 = Content.Load<SpriteFont>("Yusei");
             catnip = Content.Load<Texture2D>("Catnip");
         }
 
@@ -119,9 +121,9 @@ namespace HW1
             
 
             cat.Draw(gameTime, _spriteBatch);
-            _spriteBatch.DrawString(spriteFont, $"Time Left: {timeSpan}", new Vector2(2, 16), Color.Gold);
-            _spriteBatch.DrawString(spriteFont, $"Capture all the mice before time runs out!", new Vector2(2, 0), Color.Black, 0, new Vector2(2, 6), .5f, SpriteEffects.None, 0); 
-            _spriteBatch.DrawString(spriteFont, $"Mice left: {miceLeft}", new Vector2(2,75), Color.Gold, 0, new Vector2(2, 6), .5f, SpriteEffects.None, 0);
+            _spriteBatch.DrawString(spriteFont2, $"Time Left: {timeSpan}", new Vector2(2, 32), Color.Black, 0, new Vector2(2, 6), .6f, SpriteEffects.None, 0); ;
+            _spriteBatch.DrawString(spriteFont2, $"Capture all the mice before time runs out!", new Vector2(2, 0), Color.Black, 0, new Vector2(2, 6), .6f, SpriteEffects.None, 0); 
+            _spriteBatch.DrawString(spriteFont2, $"Mice left: {miceLeft}", new Vector2(2,65), Color.Black, 0, new Vector2(2, 6), .5f, SpriteEffects.None, 0);
             if(state == 0 && miceLeft > 0)
             {
                 _spriteBatch.DrawString(spriteFont, $"You Lose", new Vector2(200, 200), Color.Gold);
@@ -129,7 +131,7 @@ namespace HW1
             }
             else if(state == 1 && miceLeft == 0)
             {
-                _spriteBatch.DrawString(spriteFont, $"You Win", new Vector2(200, 200), Color.Gold);
+                _spriteBatch.DrawString(spriteFont, $"You Win", new Vector2(200, 200), Color.Gold, 0 ,new Vector2(0,2) , 1f, SpriteEffects.None, 0);
 
             }
             _spriteBatch.End();
