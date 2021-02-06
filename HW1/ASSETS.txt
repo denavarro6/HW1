@@ -1,0 +1,8 @@
+
+Content/Bangers/Hanalei-Regular.ttf - Bangers font created by Astigmatic, released on Google Fonts (https://fonts.google.com/specimen/Hanalei) under the Open Font License
+
+Content/cat.png - created by dogchicken on OpenGameArt.Org (https://opengameart.org/content/cat-fighter-sprite-sheet), released under public domain
+
+Content/mouse.png - created by Tuomo Untinen (Reemax) & Jordan Irwin (AntumDeluge) on OpenGameArg.org (https://opengameart.org/content/rodents-rat-rework) and relased under public domain
+
+Content/catnip.png - created by peony on OpenGameArg.org (https://opengameart.org/content/cats-pixel-art) and relased under public domain
