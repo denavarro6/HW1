@@ -5,6 +5,7 @@ using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Input;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Content;
+using Microsoft.Xna.Framework.Audio;
 using HW1.Collisions;
 namespace HW1
 {
@@ -12,11 +13,23 @@ namespace HW1
     {
         private GamePadState gamePadState;
 
+        Game game;
+
+        Viewport viewport;
+
+        private double animationTimer;
+
+        private short animationFrame = 0;
+
         private KeyboardState keyboardState;
+
+        private SoundEffect jump;
 
         private Texture2D texture;
 
-        private Vector2 position = new Vector2(200, 200);
+        private Vector2 position = new Vector2(0, 0);
+
+        Vector2 velocity;
 
         private bool flipped;
 
@@ -28,6 +41,12 @@ namespace HW1
         /// </summary>
         public Color Color { get; set; } = Color.White;
 
+        public CatSprite(Game game)
+        {
+            this.game = game;
+            viewport = game.GraphicsDevice.Viewport;
+            this.position = new Vector2(100, viewport.Height);
+        }
         /// <summary>
         /// Loads the sprite texture using the provided ContentManager
         /// </summary>
@@ -35,6 +54,7 @@ namespace HW1
         public void LoadContent(ContentManager content)
         {
             texture = content.Load<Texture2D>("cat");
+            //jump = content.Load<SoundEffect>("jump");
         }
 
         /// <summary>
@@ -45,20 +65,63 @@ namespace HW1
         {
             keyboardState = Keyboard.GetState();
 
-            if (state == 1) { 
-            // Apply keyboard movement
-            if (keyboardState.IsKeyDown(Keys.Up) || keyboardState.IsKeyDown(Keys.W)) position += new Vector2(0, -1);
-            if (keyboardState.IsKeyDown(Keys.Down) || keyboardState.IsKeyDown(Keys.S)) position += new Vector2(0, 1);
+            if (state == 1) {
+                // Apply keyboard movement
+                /*if (keyboardState.IsKeyDown(Keys.Up) || keyboardState.IsKeyDown(Keys.W))
+                {
+                    if (animationTimer > .3)
+                    {
+                        animationFrame++;
+                        if (animationFrame > 7) animationFrame = 0;
+                        animationTimer -= .3;
+                    }
+                    position += new Vector2(0, -1);
+                }*/
+                if (keyboardState.IsKeyDown(Keys.Down) || keyboardState.IsKeyDown(Keys.S))
+                {
+                    if (animationTimer > .3)
+                    {
+                        animationFrame++;
+                        if (animationFrame > 7) animationFrame = 0;
+                        animationTimer -= .3;
+                    }
+                    position += new Vector2(0, 1);
+                }
             if (keyboardState.IsKeyDown(Keys.Left) || keyboardState.IsKeyDown(Keys.A))
             {
-                position += new Vector2(-1, 0);
+                    if (animationTimer > .3)
+                    {
+                        animationFrame++;
+                        if (animationFrame > 7) animationFrame = 0;
+                        animationTimer -= .3;
+                    }
+                    position += new Vector2(-1, 0);
                 flipped = true;
             }
             if (keyboardState.IsKeyDown(Keys.Right) || keyboardState.IsKeyDown(Keys.D))
             {
-                position += new Vector2(1, 0);
+                    if (animationTimer > .3)
+                    {
+                        animationFrame++;
+                        if (animationFrame > 7) animationFrame = 0;
+                        animationTimer -= .3;
+                    }
+                    position += new Vector2(1, 0);
                 flipped = false;
             }
+                float t = (float)gameTime.ElapsedGameTime.TotalSeconds;
+                Vector2 acceleration = new Vector2(0, 2);
+                if (keyboardState.IsKeyDown(Keys.Space))
+                {
+                    acceleration = new Vector2(0, -7);
+                    //jump.Play(.25f,0,0);
+                }
+                position += acceleration;
+                if (position.Y < 32) position.Y = 32;
+                if (position.Y > viewport.Height) position.Y = viewport.Height;
+                if (position.X < 32) position.X = 32;
+                if (position.X > viewport.Width) position.X = viewport.Width;
+            
             //update the bounds
             bounds.X = position.X - 48;
             bounds.Y = position.Y - 48;
@@ -72,8 +135,12 @@ namespace HW1
         /// <param name="spriteBatch">The spritebatch to render with</param>
         public void Draw(GameTime gameTime, SpriteBatch spriteBatch)
         {
+            animationTimer += gameTime.ElapsedGameTime.TotalSeconds;
+
+            //Update animation frme
+            
             SpriteEffects spriteEffects = (flipped) ? SpriteEffects.FlipHorizontally : SpriteEffects.None;
-            var source = new Rectangle(0, 0, 48, 48);
+            var source = new Rectangle(animationFrame * 50, 0, 48, 48);
             spriteBatch.Draw(texture, position, source, Color, 0, new Vector2(64, 64), 1, spriteEffects, 0);
         }
     }

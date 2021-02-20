@@ -1,6 +1,8 @@
 ﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
+using Microsoft.Xna.Framework.Audio;
+using Microsoft.Xna.Framework.Media;
 using System;
 
 namespace HW1
@@ -11,11 +13,18 @@ namespace HW1
         private SpriteBatch _spriteBatch;
 
         private MouseSprite[] mice;
+        private DogSprite[] dogs;
+        private CatnipSprite[] catnips;
         private CatSprite cat;
         private SpriteFont spriteFont;
         private SpriteFont spriteFont2;
         private int miceLeft;
-        private Texture2D catnip;
+        private int catnipCaptured = 0;
+        //private Texture2D catnip;
+        private Texture2D mouse;
+        private SoundEffect pickup;
+        private SoundEffect jump;
+        private SoundEffect hurt;
 
         TimeSpan timeSpan = TimeSpan.FromSeconds(20);
         private int state = 1;
@@ -31,7 +40,7 @@ namespace HW1
         {
             // TODO: Add your initialization logic here
             System.Random rand = new System.Random();
-            mice = new MouseSprite[]
+           /* mice = new MouseSprite[]
             {
                 new MouseSprite(new Vector2((float)rand.NextDouble() * (GraphicsDevice.Viewport.Width - 100), (float)rand.NextDouble() * (GraphicsDevice.Viewport.Height - 100))),
                 new MouseSprite(new Vector2((float)rand.NextDouble() * (GraphicsDevice.Viewport.Width - 100), (float)rand.NextDouble() * (GraphicsDevice.Viewport.Height - 100))),
@@ -40,9 +49,24 @@ namespace HW1
                 new MouseSprite(new Vector2((float)rand.NextDouble() * (GraphicsDevice.Viewport.Width - 100), (float)rand.NextDouble() * (GraphicsDevice.Viewport.Height - 100))),
                 new MouseSprite(new Vector2((float)rand.NextDouble() * (GraphicsDevice.Viewport.Width - 100), (float)rand.NextDouble() * (GraphicsDevice.Viewport.Height - 100))),
                 new MouseSprite(new Vector2((float)rand.NextDouble() * (GraphicsDevice.Viewport.Width - 100), (float)rand.NextDouble() * (GraphicsDevice.Viewport.Height - 100)))
+            };*/
+            catnips = new CatnipSprite[]
+           {
+                new CatnipSprite(new Vector2((float)rand.NextDouble() * (GraphicsDevice.Viewport.Width - 100), (float)rand.NextDouble() * (GraphicsDevice.Viewport.Height - 100))),
+                new CatnipSprite(new Vector2((float)rand.NextDouble() * (GraphicsDevice.Viewport.Width - 100), (float)rand.NextDouble() * (GraphicsDevice.Viewport.Height - 100))),
+                new CatnipSprite(new Vector2((float)rand.NextDouble() * (GraphicsDevice.Viewport.Width - 100), (float)rand.NextDouble() * (GraphicsDevice.Viewport.Height - 100))),
+                new CatnipSprite(new Vector2((float)rand.NextDouble() * (GraphicsDevice.Viewport.Width - 100), (float)rand.NextDouble() * (GraphicsDevice.Viewport.Height - 100))),
+                new CatnipSprite(new Vector2((float)rand.NextDouble() * (GraphicsDevice.Viewport.Width - 100), (float)rand.NextDouble() * (GraphicsDevice.Viewport.Height - 100))),
+                new CatnipSprite(new Vector2((float)rand.NextDouble() * (GraphicsDevice.Viewport.Width - 100), (float)rand.NextDouble() * (GraphicsDevice.Viewport.Height - 100))),
+                new CatnipSprite(new Vector2((float)rand.NextDouble() * (GraphicsDevice.Viewport.Width - 100), (float)rand.NextDouble() * (GraphicsDevice.Viewport.Height - 100)))
+           };
+            dogs = new DogSprite[]
+            {
+                new DogSprite(new Vector2((float)rand.NextDouble() * (GraphicsDevice.Viewport.Width - 100), (float)rand.NextDouble() * (GraphicsDevice.Viewport.Height - 100))),
+                new DogSprite(new Vector2((float)rand.NextDouble() * (GraphicsDevice.Viewport.Width - 100), (float)rand.NextDouble() * (GraphicsDevice.Viewport.Height - 100))),
             };
-            miceLeft = mice.Length;
-            cat = new CatSprite();
+            //miceLeft = mice.Length;
+            cat = new CatSprite(this);
             timeSpan = TimeSpan.FromSeconds(new Random().Next(20,40));
             base.Initialize();
         }
@@ -52,11 +76,15 @@ namespace HW1
             _spriteBatch = new SpriteBatch(GraphicsDevice);
 
             // TODO: use this.Content to load your game content here
-            foreach (var mouse in mice) mouse.LoadContent(Content);
+            foreach (var catnip in catnips) catnip.LoadContent(Content);
             cat.LoadContent(Content);
             spriteFont = Content.Load<SpriteFont>("Hanalei");
             spriteFont2 = Content.Load<SpriteFont>("Yusei");
-            catnip = Content.Load<Texture2D>("Catnip");
+            //catnip = Content.Load<Texture2D>("Catnip");
+            mouse = Content.Load<Texture2D>("mouse");
+            foreach (var dog in dogs) dog.LoadContent(Content);
+            pickup = Content.Load<SoundEffect>("Collect");
+            hurt = Content.Load<SoundEffect>("Hit_Hurt");
         }
 
         protected override void Update(GameTime gameTime)
@@ -66,25 +94,39 @@ namespace HW1
 
             // TODO: Add your update logic here
             cat.Update(gameTime, state);
-
-            foreach (var mouse in mice)
+            if (state == 1)
             {
-                mouse.Update(gameTime);
-                if (!mouse.Collected && mouse.Bounds.CollidesWith(cat.Bounds))
+                foreach (var catnip in catnips)
                 {
-                    mouse.Collected = true;
-                    miceLeft--;
+                    catnip.Update(gameTime);
+                    if (!catnip.Collected && catnip.Bounds.CollidesWith(cat.Bounds))
+                    {
+                        catnip.Collected = true;
+                        catnipCaptured++;
+                        pickup.Play();
+                    }
+                }
+                foreach (var dog in dogs)
+                {
+                    dog.Update(gameTime, state);
+                    if (dog.Bounds.CollidesWith(cat.Bounds))
+                    {
+                        //dog.Collected = true;
+                        state = 0;
+                        //catnipCaptured++;
+                        hurt.Play();
+                    }
                 }
             }
-            
+
 
             if (timeSpan <= TimeSpan.Zero) { 
                 state = 0;
                 timeSpan = TimeSpan.Zero;
             }
-            else if(miceLeft == 0)
+            else if(catnipCaptured == 7)
             {
-                state = 1;
+                state = 2;
             }
             else
             {
@@ -95,22 +137,31 @@ namespace HW1
 
         protected override void Draw(GameTime gameTime)
         {
-            GraphicsDevice.Clear(Color.CornflowerBlue);
+            GraphicsDevice.Clear(Color.Green);
 
             // TODO: Add your drawing code here
             _spriteBatch.Begin();
-            foreach(var mouse in mice)
+            foreach(var catnip in catnips)
             {
-                mouse.Draw(gameTime, _spriteBatch);
+                catnip.Draw(gameTime, _spriteBatch);
                 /*
-                var rect = new Rectangle((int)(mouse.Bounds.X ),
-                                            (int)(mouse.Bounds.Y),
-                                            (int)(mouse.Bounds.Width), (int)(mouse.Bounds.Height));
-                    _spriteBatch.Draw(catnip, rect, Color.White);
-                */
+                var rect = new Rectangle((int)(catnip.Bounds.X ),
+                                            (int)(catnip.Bounds.Y),
+                                            (int)(catnip.Bounds.Width), (int)(catnip.Bounds.Height));
+                    _spriteBatch.Draw(mouse, rect, Color.White);*/
+                
                 
                 
                     
+            }
+            foreach(var dog in dogs)
+            {
+                dog.Draw(gameTime, _spriteBatch);
+                /*
+                var rect = new Rectangle((int)(dog.Bounds.X ),
+                                            (int)(dog.Bounds.Y),
+                                            (int)(dog.Bounds.Width), (int)(dog.Bounds.Height));
+                    _spriteBatch.Draw(mouse, rect, Color.White);*/
             }
             /*
             var rectG = new Rectangle((int)(cat.Bounds.X),
@@ -118,18 +169,19 @@ namespace HW1
                                         (int)( cat.Bounds.Width), (int)( cat.Bounds.Height));
             _spriteBatch.Draw(catnip, rectG, Color.White);
             */
-            
+
+
 
             cat.Draw(gameTime, _spriteBatch);
             _spriteBatch.DrawString(spriteFont2, $"Time Left: {timeSpan}", new Vector2(2, 32), Color.Black, 0, new Vector2(2, 6), .6f, SpriteEffects.None, 0); ;
-            _spriteBatch.DrawString(spriteFont2, $"Capture all the mice before time runs out!", new Vector2(2, 0), Color.Black, 0, new Vector2(2, 6), .6f, SpriteEffects.None, 0); 
-            _spriteBatch.DrawString(spriteFont2, $"Mice left: {miceLeft}", new Vector2(2,65), Color.Black, 0, new Vector2(2, 6), .5f, SpriteEffects.None, 0);
-            if(state == 0 && miceLeft > 0)
+            _spriteBatch.DrawString(spriteFont2, $"Capture as much catnip as possible before time runs out!", new Vector2(2, 0), Color.Black, 0, new Vector2(2, 6), .6f, SpriteEffects.None, 0); 
+            _spriteBatch.DrawString(spriteFont2, $"Catnip secured: {catnipCaptured}", new Vector2(2,65), Color.Black, 0, new Vector2(2, 6), .5f, SpriteEffects.None, 0);
+            if(state == 0)
             {
                 _spriteBatch.DrawString(spriteFont, $"You Lose", new Vector2(200, 200), Color.Gold);
-
+                timeSpan = TimeSpan.Zero;
             }
-            else if(state == 1 && miceLeft == 0)
+            else if(state == 2)
             {
                 _spriteBatch.DrawString(spriteFont, $"You Win", new Vector2(200, 200), Color.Gold, 0 ,new Vector2(0,2) , 1f, SpriteEffects.None, 0);
 

@@ -3,6 +3,15 @@ Content/Bangers/Hanalei-Regular.ttf - Bangers font created by Astigmatic, releas
 
 Content/cat.png - created by dogchicken on OpenGameArt.Org (https://opengameart.org/content/cat-fighter-sprite-sheet), released under public domain
 
-Content/mouse.png - created by Tuomo Untinen (Reemax) & Jordan Irwin (AntumDeluge) on OpenGameArg.org (https://opengameart.org/content/rodents-rat-rework) and relased under public domain
+Content/mouse.png - created by Tuomo Untinen (Reemax) & Jordan Irwin (AntumDeluge) on OpenGameArg.org (https://opengameart.org/content/rodents-rat-rework) and released under public domain
 
-Content/catnip.png - created by peony on OpenGameArg.org (https://opengameart.org/content/cats-pixel-art) and relased under public domain
+Content/catnip.png - created by peony on OpenGameArg.org (https://opengameart.org/content/cats-pixel-art) and released under public domain
+
+Content/Dog.png - created by Shepardskin on OpenGameArg.org (https://opengameart.org/content/husky-sprites) and released under public domain
+
+Content/Hit_Hurt.wav - created by Daniel Navarro for this program with BXFR, released under public domain
+
+Content/Collect.wav - created by Daniel Navarro for this program with BXFR, released under public domain
+
+Content/Jump.wav - created by Daniel Navarro for this program with BXFR, released under public domain
+
