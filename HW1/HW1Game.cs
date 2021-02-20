@@ -25,6 +25,7 @@ namespace HW1
         private SoundEffect pickup;
         private SoundEffect jump;
         private SoundEffect hurt;
+        private Song backgroundMusic;
 
         TimeSpan timeSpan = TimeSpan.FromSeconds(20);
         private int state = 1;
@@ -64,6 +65,7 @@ namespace HW1
             {
                 new DogSprite(new Vector2((float)rand.NextDouble() * (GraphicsDevice.Viewport.Width - 100), (float)rand.NextDouble() * (GraphicsDevice.Viewport.Height - 100))),
                 new DogSprite(new Vector2((float)rand.NextDouble() * (GraphicsDevice.Viewport.Width - 100), (float)rand.NextDouble() * (GraphicsDevice.Viewport.Height - 100))),
+                new DogSprite(new Vector2((float)rand.NextDouble() * (GraphicsDevice.Viewport.Width - 100), (float)rand.NextDouble() * (GraphicsDevice.Viewport.Height - 100))),
             };
             //miceLeft = mice.Length;
             cat = new CatSprite(this);
@@ -85,6 +87,8 @@ namespace HW1
             foreach (var dog in dogs) dog.LoadContent(Content);
             pickup = Content.Load<SoundEffect>("Collect");
             hurt = Content.Load<SoundEffect>("Hit_Hurt");
+            backgroundMusic = Content.Load<Song>("Happy walk");
+            MediaPlayer.Play(backgroundMusic);
         }
 
         protected override void Update(GameTime gameTime)
@@ -174,12 +178,14 @@ namespace HW1
 
             cat.Draw(gameTime, _spriteBatch);
             _spriteBatch.DrawString(spriteFont2, $"Time Left: {timeSpan}", new Vector2(2, 32), Color.Black, 0, new Vector2(2, 6), .6f, SpriteEffects.None, 0); ;
-            _spriteBatch.DrawString(spriteFont2, $"Capture as much catnip as possible before time runs out!", new Vector2(2, 0), Color.Black, 0, new Vector2(2, 6), .6f, SpriteEffects.None, 0); 
+            _spriteBatch.DrawString(spriteFont2, $"Capture as much catnip as possible before time runs out!", new Vector2(2, 0), Color.Black, 0, new Vector2(2, 6), .5f, SpriteEffects.None, 0);
+            _spriteBatch.DrawString(spriteFont2, $"Hold space to jump and avoid the dogs!", new Vector2(200, 450), Color.Black, 0, new Vector2(2, 6), .3f, SpriteEffects.None, 0);
             _spriteBatch.DrawString(spriteFont2, $"Catnip secured: {catnipCaptured}", new Vector2(2,65), Color.Black, 0, new Vector2(2, 6), .5f, SpriteEffects.None, 0);
             if(state == 0)
             {
                 _spriteBatch.DrawString(spriteFont, $"You Lose", new Vector2(200, 200), Color.Gold);
                 timeSpan = TimeSpan.Zero;
+                MediaPlayer.Pause();
             }
             else if(state == 2)
             {

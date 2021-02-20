@@ -15,3 +15,4 @@ Content/Collect.wav - created by Daniel Navarro for this program with BXFR, rele
 
 Content/Jump.wav - created by Daniel Navarro for this program with BXFR, released under public domain
 
+Content/Happy walk.mp3 - created by Johan Brodd (https://opengameart.org/content/happy-walk) released under GPL 3.0 license

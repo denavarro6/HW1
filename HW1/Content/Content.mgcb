@@ -62,6 +62,12 @@
 /processorParam:TextureFormat=Compressed
 /build:Hanalei.spritefont
 
+#begin Happy walk.mp3
+/importer:Mp3Importer
+/processor:SongProcessor
+/processorParam:Quality=Best
+/build:Happy walk.mp3
+
 #begin Hit_Hurt.wav
 /importer:WavImporter
 /processor:SoundEffectProcessor
